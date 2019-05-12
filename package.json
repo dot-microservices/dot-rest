@@ -1,0 +1,51 @@
+{
+  "name": "dot-rest",
+  "version": "0.1.0",
+  "description": "a minimalist toolkit for building scalable, fault tolerant and eventually-consistent microservices",
+  "keywords": [
+    "microservice",
+    "microservices",
+    "soa",
+    "rpc",
+    "service registry",
+    "service discovery",
+    "rest",
+    "api"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "coverage": "./node_modules/.bin/jest --coverage",
+    "test": "./node_modules/.bin/jest"
+  },
+  "author": {
+    "name": "Umut Aydin"
+  },
+  "engines": {
+    "node": ">=v6.14.4"
+  },
+  "bugs": {
+    "url": "https://github.com/Dvs-Bilisim/dot-rest/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Dvs-Bilisim/dot-rest.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "axios": "^0.18.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "jest": "^24.7.1"
+  },
+  "dependencies": {
+    "body": "^5.1.0",
+    "clerq": "^0.1.4",
+    "find-my-way": "^2.0.1",
+    "is_js": "^0.9.0",
+    "portfinder": "^1.0.20"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
