@@ -9,7 +9,16 @@ const portFinder = require('portfinder');
 const Clerq = require('clerq');
 const url = require('url');
 
+/**
+ * @description Server class
+ * @class Server
+ */
 class Server {
+    /**
+     *Creates an instance of Server.
+     * @param {Object} options
+     * @memberof Server
+     */
     constructor(options) {
         if (is.not.undefined(options) && is.not.object(options))
             throw new Exception('invalid options');
@@ -34,6 +43,13 @@ class Server {
         });
     }
 
+    /**
+     * @description builds endpoints up
+     * @param {Function} service
+     * @private
+     * @returns Object
+     * @memberof Server
+     */
     _configureService(service) {
         let configure = is.function(service) && is.function(service._configure) ? service._configure() : {};
         if (is.not.object(configure) || is.array(configure)) configure = {};
@@ -52,6 +68,14 @@ class Server {
         return configure;
     }
 
+    /**
+     * @description binds a new endpoint
+     * @param {String} method
+     * @param {String} path
+     * @param {Function} handler
+     * @private
+     * @memberof Server
+     */
     _on(method, path, handler) {
         if (is.undefined(handler)) handler = () => {};
         if (is.not.function(handler)) throw new Exception('invalid handler');
@@ -84,6 +108,11 @@ class Server {
         });
     }
 
+    /**
+     * @description adds a new service
+     * @param {Function} service
+     * @memberof Server
+     */
     addService(service) {
         if (is.not.function(service)) throw new Exception('service must be a class');
 
@@ -109,6 +138,10 @@ class Server {
         });
     }
 
+    /**
+     * @description starts server instance
+     * @memberof Server
+     */
     async start() {
         this._options.port = await portFinder.getPortPromise({
             port: is.number(this._options.port) ? Math.abs(this._options.port) : undefined
@@ -116,11 +149,23 @@ class Server {
         this._http.listen(this._options.port);
     }
 
+    /**
+     * @description graceful shutdown for server instance
+     * @memberof Server
+     */
     stop() {
         this._http.close();
         this._registry.stop();
     }
 
+    /**
+     * @description returns proper service name
+     * @param {Function} service
+     * @static
+     * @private
+     * @returns String
+     * @memberof Server
+     */
     static _name(service) {
         if (is.not.function(service)) throw new Exception('invalid service');
         else if (service.hasOwnProperty('_name') && is.function(service._name))
@@ -129,6 +174,14 @@ class Server {
         return `${ service.name.charAt(0).toLowerCase() }${ service.name.slice(1) }`;
     }
 
+    /**
+     * @description returns hyphenated form of camel-case string
+     * @param {String} str
+     * @static
+     * @private
+     * @returns
+     * @memberof Server
+     */
     static _unCamelCase(str){
         str = str.replace(/([a-z\xE0-\xFF])([A-Z\xC0\xDF])/g, '$1-$2');
         str = str.toLowerCase();
