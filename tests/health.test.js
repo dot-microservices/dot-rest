@@ -1,6 +1,6 @@
 'use strict';
 
-const axios = require('axios');
+const Client = require('../src/client');
 const Exception = require('../src/exception');
 const Server = require('../src/server');
 
@@ -52,16 +52,20 @@ class Service {
     }
 }
 
-const server = new Server({ });
-server.addService(Service);
-server.start().catch(console.log);
+const client = new Client({ debug: true, expire: 5 });
+const server = new Server({ debug: true, expire: 5 });
+server.start()
+    .then(() => server.addService(Service))
+    .catch(console.log);
 
-afterAll(() => server.stop());
+afterAll(() => {
+    server.stop();
+    client.close();
+});
 
 test('availability', done => {
     setTimeout(async() => {
-        const url = `http://localhost:${ server._options.port }/${ Server._unCamelCase(Service._name()) }/test`;
-        const r = await axios.get(url);
+        const r = await client.get(Server._unCamelCase(Service._name()), 'test');
         expect(r.data.path).toBe('test');
         done();
     }, 500);
