@@ -1,34 +1,29 @@
 'use strict';
 
+const Base = require('./base');
 const body = require('body/json');
 const Exception = require('./exception');
 const findMyWay = require('find-my-way');
 const http = require('http');
 const is = require('is_js');
 const portFinder = require('portfinder');
-const Clerq = require('clerq');
 const url = require('url');
 
 /**
  * @description Server class
  * @class Server
+ * @extends {Base}
  */
-class Server {
+class Server extends Base {
     /**
      *Creates an instance of Server.
      * @param {Object} options
      * @memberof Server
      */
     constructor(options) {
-        if (is.not.undefined(options) && is.not.object(options))
-            throw new Exception('invalid options');
+        super(options);
 
         this._ignoredProperties = [ 'length', 'name', 'prototype' ];
-        this._options = Object.assign({}, is.object(options) && is.not.array(options) ? options : {});
-        this._registry = new Clerq({
-            host: this._options.redis_host || '127.0.0.1',
-            port: this._options.redis_port || 6379
-        });
         this._http = http.createServer((req, res) => this.$r.lookup(req, res));
         this.$r = findMyWay({
             caseSensitive: this._options.router && is.existy(this._options.router.caseSensitive) ?
@@ -57,7 +52,7 @@ class Server {
             if (cfg.startsWith('_') || is.not.function(service[cfg])) delete configure[cfg];
             if (is.not.array(configure[cfg])) delete configure[cfg];
             else if (is.string(configure[cfg][0]))
-                configure[cfg] = [ [ configure[cfg][0], configure[cfg][1] || Server._unCamelCase(cfg) ] ];
+                configure[cfg] = [ [ configure[cfg][0], configure[cfg][1] || Base._unCamelCase(cfg) ] ];
         }
         for (let method of Object.getOwnPropertyNames(service)) {
             if (!method || method.startsWith('_') || this._ignoredProperties.includes(method)) continue;
@@ -117,7 +112,7 @@ class Server {
         if (is.not.function(service)) throw new Exception('service must be a class');
 
         const configure = this._configureService(service);
-        const name = Server._unCamelCase(Server._name(service));
+        const name = Base._unCamelCase(Base._name(service));
         for (let method in configure) {
             if (method.startsWith('_') || is.not.function(service[method])) continue;
             else if (service[method].constructor.name !== 'AsyncFunction') continue;
@@ -130,10 +125,10 @@ class Server {
                 if (is.not.function(this.$r[cfg[0]])) throw new Exception('invalid http method');
 
                 const path = cfg[1].startsWith('/') ? cfg[1].substr(1) : cfg[1];
-                this._on(cfg[0], `/${ name }/${ Server._unCamelCase(path) }`, service[method]);
+                this._on(cfg[0], `/${ name }/${ Base._unCamelCase(path) }`, service[method]);
             }
         }
-        this._registry.up(service, this._options.port).catch(e => {
+        this._registry.up(name, this._options.port).catch(e => {
             if (this._options.debug) console.log(e);
         });
     }
@@ -156,36 +151,6 @@ class Server {
     stop() {
         this._http.close();
         this._registry.stop();
-    }
-
-    /**
-     * @description returns proper service name
-     * @param {Function} service
-     * @static
-     * @private
-     * @returns String
-     * @memberof Server
-     */
-    static _name(service) {
-        if (is.not.function(service)) throw new Exception('invalid service');
-        else if (service.hasOwnProperty('_name') && is.function(service._name))
-            return service._name();
-
-        return `${ service.name.charAt(0).toLowerCase() }${ service.name.slice(1) }`;
-    }
-
-    /**
-     * @description returns hyphenated form of camel-case string
-     * @param {String} str
-     * @static
-     * @private
-     * @returns
-     * @memberof Server
-     */
-    static _unCamelCase(str){
-        str = str.replace(/([a-z\xE0-\xFF])([A-Z\xC0\xDF])/g, '$1-$2');
-        str = str.toLowerCase();
-        return str;
     }
 }
 
