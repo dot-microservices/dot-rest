@@ -141,7 +141,7 @@ class Server extends Base {
         this._options.port = await portFinder.getPortPromise({
             port: is.number(this._options.port) ? Math.abs(this._options.port) : undefined
         });
-        this._http.listen(this._options.port);
+        this._http.listen(this._options.port, this._options.host);
     }
 
     /**
