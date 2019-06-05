@@ -1,6 +1,6 @@
 {
   "name": "dot-rest",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "a minimalist toolkit for building scalable, fault tolerant and eventually-consistent microservices",
   "keywords": [
     "microservice",
@@ -34,13 +34,13 @@
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-import": "^2.17.3",
     "jest": "^24.7.1"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "body": "^5.1.0",
-    "clerq": "^0.1.4",
+    "clerq": "^0.1.8",
     "find-my-way": "^2.0.1",
     "is_js": "^0.9.0",
     "portfinder": "^1.0.20"
