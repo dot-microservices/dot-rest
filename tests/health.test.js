@@ -52,14 +52,14 @@ class Service {
     }
 }
 
-const client = new Client({ debug: true, expire: 5 });
-const server = new Server({ debug: true, expire: 5 });
+const client = new Client({ expire: 5 });
+const server = new Server({ expire: 5 });
 server.start()
     .then(() => server.addService(Service))
     .catch(console.log);
 
 afterAll(() => {
-    server.stop();
+    server.stop(true);
     client.close();
 });
 
