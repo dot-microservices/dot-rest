@@ -25,6 +25,7 @@ class Server extends Base {
 
         this._ignoredProperties = [ 'length', 'name', 'prototype' ];
         this._http = http.createServer((req, res) => this.$r.lookup(req, res));
+        this._services = [];
         this.$r = findMyWay({
             caseSensitive: this._options.router && is.existy(this._options.router.caseSensitive) ?
                 this._options.router.caseSensitive : false,
@@ -128,9 +129,13 @@ class Server extends Base {
                 this._on(cfg[0], `/${ name }/${ Base._unCamelCase(path) }`, service[method]);
             }
         }
-        this._registry.up(name, this._options.port).catch(e => {
-            if (this._options.debug) console.log(e);
-        });
+        this._registry.up(name, this._options.port)
+            .then(() => {
+                if (!this._services.includes(name)) this._services.push(name);
+            })
+            .catch(e => {
+                if (this._options.debug) console.log(e);
+            });
     }
 
     /**
@@ -146,10 +151,19 @@ class Server extends Base {
 
     /**
      * @description graceful shutdown for server instance
+     * @param {Boolean} [destroy] flag for destroying service key
      * @memberof Server
      */
-    stop() {
+    async stop(destroy) {
         this._http.close();
+        try {
+            for (let service of this._services) {
+                if (destroy) await this._registry.destroy(service);
+                else await this._registry.down(service, this._options.port);
+            }
+        } catch (e) {
+            if (this._options.debug) console.log(e);
+        }
         this._registry.stop();
     }
 }
