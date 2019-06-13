@@ -22,6 +22,10 @@ class Base {
         this._clerq();
     }
 
+    /**
+     * @description creates a valid clerq instance for service registry and discovery
+     * @memberof Base
+     */
     _clerq() {
         const options = { host: this._options.redis_host || '127.0.0.1',
             port: this._options.redis_port || 6379, redis: this._options.redis };
@@ -29,6 +33,7 @@ class Base {
         if (this._options.delimiter) options.delimiter = this._options.delimiter;
         if (this._options.expire) options.expire = this._options.expire;
         if (this._options.prefix) options.prefix = this._options.prefix;
+        if (is.not.undefined(this._options.debug)) options.debug = !!this._options.debug;
         this._registry = new Clerq(options);
     }
 
