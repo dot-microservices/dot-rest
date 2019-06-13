@@ -1,4 +1,4 @@
-# dot-rest (UNDER DEVELOPMENT)
+# dot-rest
 
 a minimalist toolkit for building fast, scalable and fault tolerant microservices
 
