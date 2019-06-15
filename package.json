@@ -1,6 +1,6 @@
 {
   "name": "dot-rest",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "a minimalist toolkit for building scalable, fault tolerant and eventually-consistent microservices",
   "keywords": [
     "microservice",
