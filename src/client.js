@@ -34,8 +34,11 @@ class Client extends Base {
                 if (is.string(address) && is.not.empty(address) && address.includes(':')) {
                     let url = `http://${ address }/${ service }`;
                     if (is.string(method)) url += `/${ method }`;
-                    const request = Object.assign({ method: httpMethod, url },
-                        is.object(options) && is.not.array(options) ? options : {});
+                    const request = { method: httpMethod, url };
+                    options = is.object(options) && is.not.array(options) ? options : {};
+                    if (httpMethod === 'get' || httpMethod === 'delete')
+                        request.params = options;
+                    else request.data = options;
                     axios(request).then(r => resolve(r)).catch(e => reject(e));
                 } else reject(new Error('UNKNOWN_SERVICE'));
             }).catch(e => reject(e));
