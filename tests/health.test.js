@@ -13,7 +13,7 @@ class Service {
      */
     static _configure() {
         return {
-            echo: [ '*', '/:path' ]
+            echo: [ '*', '/' ]
         };
     }
 
@@ -36,7 +36,7 @@ class Service {
      * @memberof Service
      */
     static async echo(req) { // ? , res
-        return req.params;
+        return req.body || req.query;
     }
 
     /**
@@ -65,8 +65,9 @@ afterAll(() => {
 
 test('availability', done => {
     setTimeout(async() => {
-        const r = await client.get(Server._unCamelCase(Service._name()), 'test');
-        expect(r.data.path).toBe('test');
+        const name = Server._unCamelCase(Service._name());
+        const r = await client.post(name, { one: '1' });
+        expect(r.data.one).toBe('1');
         done();
     }, 500);
 });
