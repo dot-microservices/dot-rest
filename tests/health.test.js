@@ -52,8 +52,8 @@ class Service {
     }
 }
 
-const client = new Client({ expire: 5 });
-const server = new Server({ expire: 5 });
+const client = new Client({ expire: 5, pino: { level: 'debug' } });
+const server = new Server({ expire: 5, pino: { level: 'debug' } });
 server.start()
     .then(() => server.addService(Service))
     .catch(console.log);

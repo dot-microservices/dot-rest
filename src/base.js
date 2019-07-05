@@ -3,6 +3,7 @@
 const Exception = require('./exception');
 const is = require('is_js');
 const Clerq = require('clerq');
+const pino = require('pino');
 
 /**
  * @description Base class
@@ -19,6 +20,7 @@ class Base {
             throw new Exception('invalid options');
 
         this._options = Object.assign({}, is.object(options) && is.not.array(options) ? options : {});
+        this._logger = pino(Object.assign({ level: 'error' }, is.object(this._options.pino) ? this._options.pino : {}));
         this._clerq();
     }
 
@@ -33,7 +35,7 @@ class Base {
         if (this._options.delimiter) options.delimiter = this._options.delimiter;
         if (this._options.expire) options.expire = this._options.expire;
         if (this._options.prefix) options.prefix = this._options.prefix;
-        if (is.not.undefined(this._options.debug)) options.debug = !!this._options.debug;
+        if (this._options.pino) options.pino = this._options.pino;
         this._registry = new Clerq(options);
     }
 
@@ -47,7 +49,7 @@ class Base {
      */
     static _name(service) {
         if (is.not.function(service)) throw new Exception('invalid service');
-        else if (service.hasOwnProperty('_name') && is.function(service._name))
+        else if (is.function(service._name))
             return service._name();
 
         return `${ service.name.charAt(0).toLowerCase() }${ service.name.slice(1) }`;
