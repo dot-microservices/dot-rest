@@ -4,12 +4,12 @@ a minimalist toolkit for building fast, scalable and fault tolerant microservice
 
 ## Configuration
 
-- **cache       :** Expiration value in milliseconds for service caching. It's disabled by default.
-- **debug       :** Debug mode. It's disabled by default.
-- **delimiter   :** Delimiter between prefix and service name.
-- **expire      :** expire for service registry records. It's disabled by default.
-- **host        :** Binds server instance to this value. It's 0.0.0.0 by default.
-- **port        :** Start point for port range. If you set server instance looks up for its port starting from this number. It's 8000 by default.
+- **cache       :** expiration value in milliseconds for service caching. it's disabled by default.
+- **delimiter   :** delimiter between prefix and service name.
+- **expire      :** expire for service registry records. it's disabled by default.
+- **host        :** binds server instance to this value. it's 0.0.0.0 by default.
+- **pino        :** options for pino logger. it's { "level": "error" } by default.
+- **port        :** start point for port assignment. it's 8000 by default.
 - **prefix      :** prefix for service names
 - **redis       :** options for redis instance ( please see <https://www.npmjs.com/package/redis> )
 - **redis_host  :** redis hostname
