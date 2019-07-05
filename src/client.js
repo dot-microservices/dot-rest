@@ -39,9 +39,23 @@ class Client extends Base {
                     if (httpMethod === 'get' || httpMethod === 'delete')
                         request.params = options;
                     else request.data = options;
-                    axios(request).then(r => resolve(r)).catch(e => reject(e));
-                } else reject(new Error('UNKNOWN_SERVICE'));
-            }).catch(e => reject(e));
+                    axios(request)
+                        .then(r => {
+                            this._logger.info(request, 'success');
+                            resolve(r);
+                        })
+                        .catch(e => {
+                            this._logger.error({ httpMethod, service, method, options }, e.message);
+                            reject(e);
+                        });
+                } else {
+                    this._logger.error({ httpMethod, service, method, options }, 'unknown service');
+                    reject(new Error('UNKNOWN_SERVICE'));
+                }
+            }).catch(e => {
+                this._logger.error({ httpMethod, service, method, options }, e.message);
+                reject(e);
+            });
         });
     }
 
@@ -131,6 +145,7 @@ class Client extends Base {
      */
     close() {
         this._registry.stop();
+        this._logger.info('Client.close() success');
     }
 }
 

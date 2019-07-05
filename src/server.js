@@ -131,10 +131,13 @@ class Server extends Base {
         }
         this._registry.up(name, this._options.port)
             .then(() => {
-                if (!this._services.includes(name)) this._services.push(name);
+                if (!this._services.includes(name)) {
+                    this._logger.info(`Server.addService(${ name }) success`);
+                    this._services.push(name);
+                } else this._logger.warn(`Server.addService(${ name }) exists`);
             })
             .catch(e => {
-                if (this._options.debug) console.log(e);
+                this._logger.error(e, `Server.addService(${ name })`);
             });
     }
 
@@ -161,8 +164,9 @@ class Server extends Base {
                 if (destroy) await this._registry.destroy(service);
                 else await this._registry.down(service, this._options.port);
             }
+            this._logger.info(`Server.stop(${ destroy }) success`);
         } catch (e) {
-            if (this._options.debug) console.log(e);
+            this._logger.error(e, `Server.stop(${ destroy })`);
         }
         this._registry.stop();
     }
