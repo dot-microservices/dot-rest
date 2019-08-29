@@ -8,6 +8,7 @@ a minimalist toolkit for building fast, scalable and fault tolerant microservice
 - **delimiter   :** delimiter between prefix and service name.
 - **expire      :** expire for service registry records. it's disabled by default.
 - **host        :** binds server instance to this value. it's 0.0.0.0 by default.
+- **iface       :** optional. name of the network interface to get outer ip from
 - **pino        :** options for pino logger. it's { "level": "error" } by default.
 - **port        :** start point for port assignment. it's 8000 by default.
 - **prefix      :** prefix for service names
