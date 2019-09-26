@@ -12,11 +12,12 @@ const is = require('is_js');
 class Client extends Base {
     /**
      *Creates an instance of Client.
+     * @param {Object} clerq Clerq instance
      * @param {Object} options
      * @memberof Client
      */
-    constructor(options) {
-        super(options);
+    constructor(clerq, options) {
+        super(clerq, options);
     }
 
     /**

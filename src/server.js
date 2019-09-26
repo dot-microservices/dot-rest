@@ -17,11 +17,12 @@ const url = require('url');
 class Server extends Base {
     /**
      *Creates an instance of Server.
+     * @param {Object} clerq Clerq instance
      * @param {Object} options
      * @memberof Server
      */
-    constructor(options) {
-        super(options);
+    constructor(clerq, options) {
+        super(clerq, options);
 
         this._ignoredProperties = [ 'length', 'name', 'prototype' ];
         this._http = http.createServer((req, res) => this.$r.lookup(req, res));
@@ -83,23 +84,21 @@ class Server extends Base {
             req.query = query ? query.query || {} : {};
             body(req, (e, payload) => {
                 req.body = payload;
-                const output = handler(req, res);
-                if (output instanceof Promise)
-                    output
-                        .then(r => {
-                            if (r instanceof Buffer) return r.toString();
-                            else if (r instanceof Array || is.object(r)) return JSON.stringify(r);
-                            else if (is.not.existy(r) || is.nan(r)) throw new Exception('invalid value');
-                            else return r.toString();
-                        })
-                        .then(d => {
-                            res.writeHead(200, { 'Content-Type': 'application/json' });
-                            res.end(d);
-                        })
-                        .catch(e => {
-                            res.statusCode = is.number(e._code) ? Math.abs(e._code) : 500;
-                            res.end(e.message);
-                        });
+                handler(req, res)
+                    .then(r => {
+                        if (r instanceof Buffer) return r.toString();
+                        else if (r instanceof Array || is.object(r)) return JSON.stringify(r);
+                        else if (is.not.existy(r) || is.nan(r)) throw new Exception('invalid value');
+                        else return r.toString();
+                    })
+                    .then(d => {
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(d);
+                    })
+                    .catch(e => {
+                        res.statusCode = is.number(e._code) ? Math.abs(e._code) : 500;
+                        res.end(e.message);
+                    });
             });
         });
     }
