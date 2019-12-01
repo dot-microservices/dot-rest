@@ -1,6 +1,6 @@
 {
   "name": "dot-rest",
-  "version": "0.3.3",
+  "version": "0.3.5",
   "description": "a minimalist toolkit for building scalable, fault tolerant and eventually-consistent microservices",
   "keywords": [
     "microservice",
@@ -24,11 +24,11 @@
     "node": ">=v6.14.4"
   },
   "bugs": {
-    "url": "https://github.com/Dvs-Bilisim/dot-rest/issues"
+    "url": "https://github.com/dot-microservices/dot-rest/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/Dvs-Bilisim/dot-rest.git"
+    "url": "git://github.com/dot-microservices/dot-rest.git"
   },
   "license": "MIT",
   "devDependencies": {
